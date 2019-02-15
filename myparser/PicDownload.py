@@ -4,7 +4,6 @@
 
 # import necesarry libaries
 import requests
-from bs4 import BeautifulSoup
 
 def picDownload(url, path):
     pic = requests.get(url)
