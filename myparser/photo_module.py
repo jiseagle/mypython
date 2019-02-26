@@ -5,6 +5,34 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+import threading
+import PicDownload as PD
+
+def get_photobythread(folder_name, photo_name, photo_list):
+    download_num = len(photo_list)             # set total download number is the same as the length of photo_list
+    Q = int(download_num/100)
+    R = download_num % 100
+    
+    for i in range(Q):
+        threads = []
+        for j in range(100):
+            threads.append(threading.Thread(target = PD.picDownload, args = (photo_list[i*100+j], folder_name + os.sep +
+                                                                           photo_name + os.sep + str(i*100+j+1))))
+            threads[j].start()
+        for j in threads:
+            j.join()
+        print("[INFO] ===> Download Progress is ", int((i+1)*100/download_num*100), '%')
+    
+    threads = []
+    
+    for i in range(R):
+        threads.append(threading.Thread(target = PD.picDownload, args = (photo_list[Q*100+i], folder_name + os.sep +
+                                                                           photo_name + os.sep + str(Q*100+i+1))))
+        threads[i].start()
+    for i in threads:
+        i.join()
+    print("[INFO] ===> Download is 100% finished")
+    
 
 def getPhotolist(photo_name, download_num):
     page = 1                      # initial page = 1
@@ -20,13 +48,7 @@ def getPhotolist(photo_name, download_num):
         
         if len(photo_item) == 0:   # if not find item, then return None
             return None
-        
-        elif photo_name is False:
-            return -1
-        
-        elif download_num is False:
-            return -2
-        
+       
         for i in range(len(photo_item)):
             photo = photo_item[i].find('img')['src']
             
