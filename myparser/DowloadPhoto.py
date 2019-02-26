@@ -30,10 +30,6 @@ while True:
 
 print("[INFO] ===> Start to download pictures.......")
 
-for i in range(len(photo_list)):
-    PD.picDownload(photo_list[i], folder_name + os.sep + photo_name + os.sep + photo_name+str(i+1))
-    print("[INFO] ===> Picture number {0} download finished.......".format(i+1))
-    
+pm.get_photobythread(folder_name, photo_name, photo_list)
 
-print("[INFO] ===> Dowload Process is finished.......")
 print("[INFO] ===> Totally, we get {} pictures.......".format(len(photo_list)))
