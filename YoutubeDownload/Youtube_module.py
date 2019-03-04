@@ -8,6 +8,7 @@ import requests
 from pytube import YouTube
 import threading
 import tkinter as tk
+import os
 
 lock = threading.Lock()
 
@@ -20,7 +21,13 @@ def start_download(url, listBox):
     listBox.insert(tk.END, f'下載中: {num:02d}:{title}')
     lock.release()
     
-    yt.streams.first().download()  #開始下載影片
+    if os.path.exists(os.getcwd()+os.sep+'download'):
+        yt.streams.first().download(os.getcwd()+os.sep+'download')  #開始下載影片
+    
+    else:
+        os.mkdir('download')
+        yt.streams.first().download(os.getcwd()+os.sep+'download')  #開始下載影片
+    
     
     lock.acquire()
     listBox.delete(num)
