@@ -17,7 +17,8 @@ def click_func():
     except:
         messagebox.showerror('錯誤', 'pytube 不支援此影片或是網址錯誤!!')
     
-    urls, titles = m.get_urls(url)
+    #urls, titles = m.get_urls(url)
+    urls = m.get_urls(url)
     
     if urls and messagebox.askyesno('確認方塊', '是否下載清單內所有影片?? (選擇[否], 則下載目前單一影片 )'):
         # ---- 開始執行下載 -------
@@ -35,6 +36,33 @@ def click_func():
         else:
             print(f"[INFO] ===> 取消下載 {yt.title} 影片")
     
+
+def click_func1():
+    url = yt_url.get()
+    try:
+        YouTube(url)
+    except:
+        messagebox.showerror('錯誤', 'pytube 不支援此音樂或是網址錯誤!!')
+    
+    #urls, titles = m.get_urls(url)
+    urls = m.get_urls(url)
+    
+    if urls and messagebox.askyesno('確認方塊', '是否下載清單內所有音樂?? (選擇[否], 則下載目前單一音樂 )'):
+        # ---- 開始執行下載 -------
+        print("[INFO] ===> 開始下載......")
+        
+        for u in urls:
+            threading.Thread(target=m.start_downloadm, args=(u, listbox)).start()
+    
+    else:                                          # 下載單一影片
+        yt = YouTube(url)
+        if messagebox.askyesno("確認方塊", f'是否下載 {yt.title} 音樂？'):
+            #print(f'[INFO] ===> 開始下載 {yt.title} 音樂')
+            threading.Thread(target=m.start_downloadm, args=(url, listbox)).start()
+        
+        else:
+            print(f"[INFO] ===> 取消下載 {yt.title} 音樂")
+
 
 # ------------ 主視窗 -----------------
 window = tk.Tk()
@@ -56,7 +84,11 @@ entry1.place(rely=0.5, relx=0.5, anchor = 'center')
 
 # ------------ Button: 下載影片 ---------------------
 btn = tk.Button(frame1, text='下載影片', command = click_func, bg='#FFD700', fg='black', font=('細明體', 12))
-btn.place(rely=0.5, relx=0.9, anchor='center')
+btn.place(rely=0.3, relx=0.9, anchor='center')
+
+# ------------ Button: 下載音樂 ---------------------
+btn1 = tk.Button(frame1, text='下載音樂', command = click_func1, bg='#FFD700', fg='black', font=('細明體', 12))
+btn1.place(rely=0.7, relx=0.9, anchor='center')
 
 # ------------ Frame2:下方顯示下載狀態區域 -----------
 frame2 = tk.Frame(window, bg = 'gray', width = 640, height = 480-120)
